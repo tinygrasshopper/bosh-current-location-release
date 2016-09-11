@@ -1,0 +1,28 @@
+name: current-location
+
+director_uuid: 30a779b6-34d1-4ae8-9760-b1d61dc9db65
+
+releases:
+- {name: current-location, version: latest}
+
+stemcells:
+- alias: trusty
+  os: ubuntu-trusty
+  version: latest
+
+jobs:
+- name: redis-server
+  instances: 1
+  templates:
+  - {name: location_server, release: current-location}
+  vm_type: container
+  stemcell: trusty
+  azs: [lite]
+  networks:
+  - name: services
+
+update:
+  canaries: 1
+  canary_watch_time: 500
+  update_watch_time: 500
+  max_in_flight: 4

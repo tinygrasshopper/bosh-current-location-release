@@ -1,0 +1,53 @@
+#!/bin/bash -e
+
+log_facility=user
+log_tag="$(basename "$0" .sh)"
+log_dir=/var/vcap/sys/log/location_server
+log_file=$log_dir/ctl.log
+
+pidfile=/var/vcap/sys/run/location_server.pid
+
+mkdir -p $log_dir $(dirname $pidfile)
+chown -R vcap:vcap $log_dir $(dirname $pidfile)
+
+log() {
+  log_level=$1
+  shift
+  echo "$(date): $*" | logger -p $log_facility.$log_level -t $log_tag -s 2>> $log_file
+}
+
+case $1 in
+
+  start)
+    log info "starting"
+    /var/vcap/packages/location_server/server \
+      >> $log_dir/stdout.log \
+      2>> $log_dir/stderr.log &
+    echo $! > /var/vcap/sys/run/location_server.pid
+    ;;
+
+  stop)
+    log info "stopping"
+    pid=$(cat $pidfile)
+    if [ -z "$pid" ]
+    then
+      log info "!pidfile was empty!"
+      exit 1
+    fi
+
+    kill $pid
+    while ps -p $pid
+    do
+      log info "waiting to stop..."
+      sleep 1
+    done
+    rm -f $pidfile
+    ;;
+
+  *)
+    log warning "operation '$1' is not supported"
+    echo "Usage: ctl.sh start/stop" >&2
+    exit 1
+    ;;
+
+esac

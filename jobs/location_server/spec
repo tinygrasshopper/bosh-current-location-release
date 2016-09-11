@@ -1,0 +1,8 @@
+---
+name: location_server
+templates:
+  location_server_ctl.sh.erb: bin/ctl
+
+packages:
+  - ruby
+  - location_server

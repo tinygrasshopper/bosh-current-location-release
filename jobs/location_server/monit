@@ -1,0 +1,5 @@
+check process location_server
+  with pidfile /var/vcap/sys/run/location_server.pid
+  start program "/var/vcap/jobs/location_server/bin/ctl start"
+  stop program "/var/vcap/jobs/location_server/bin/ctl stop"
+  group vcap

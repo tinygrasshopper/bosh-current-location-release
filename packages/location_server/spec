@@ -1,0 +1,7 @@
+---
+name: location_server
+
+dependencies: [ruby]
+
+files:
+  - location_server/*

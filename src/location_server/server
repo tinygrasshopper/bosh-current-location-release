@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+export BUNDLE_GEMFILE=/var/vcap/packages/location_server/Gemfile
+export PATH=$PATH:/var/vcap/packages/ruby/bin
+cd /var/vcap/packages/location_server
+bundle install
+sudo bundle exec ruby config.ru -p 80
